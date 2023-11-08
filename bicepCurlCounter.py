@@ -6,6 +6,19 @@ import numpy as np
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose 
 
+def calculate_angle(a,b,c):
+    a = np.array(a) # first
+    b = np.array(b) # mid
+    c = np.array(c) # end
+
+    # calculate elbow angle
+    radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+    angle = np.abs(radians*180.0/np.pi)
+
+    if angle > 180.0:
+        angle = 360-angle
+
+    return angle
 
 cap = cv2.VideoCapture(0)
 # setup mediapipe instance
@@ -24,11 +37,25 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         # recolor back to BGR
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        width = cap.get(3)
+        height = cap.get(4)
+        print(width,height)
 
         # extract landmarks
         try:
             landmarks = results.pose_landmarks.landmark
-            print(landmarks)
+            # Get coordinates
+            shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+            elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+            wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+            
+            # Calculate angle
+            angle = calculate_angle(shoulder, elbow, wrist)
+            
+            # Visualize angle
+            cv2.putText(image, str(angle), 
+                           tuple(np.multiply(elbow, [1280, 720]).astype(int)), # converting coord to actual coord based on camer feed size
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
         except:
             pass
 
