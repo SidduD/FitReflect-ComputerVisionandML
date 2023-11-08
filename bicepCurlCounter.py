@@ -21,6 +21,11 @@ def calculate_angle(a,b,c):
     return angle
 
 cap = cv2.VideoCapture(0)
+
+#curl counter vars
+counter = 0 
+stage = None
+
 # setup mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
     # video feed
@@ -37,9 +42,6 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         # recolor back to BGR
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        width = cap.get(3)
-        height = cap.get(4)
-        print(width,height)
 
         # extract landmarks
         try:
@@ -54,10 +56,33 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             
             # Visualize angle
             cv2.putText(image, str(angle), 
-                           tuple(np.multiply(elbow, [1280, 720]).astype(int)), # converting coord to actual coord based on camer feed size
+                           tuple(np.multiply(elbow, [cap.get(3),cap.get(4)]).astype(int)), # converting coord to actual coord based on camer feed size
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+            
+            # curl logic
+
+            if (angle > 160):
+                stage = "down"
+               
+            if angle < 30 and stage == "down":
+                stage="up"
+                counter += 1
+                print(counter)
+
         except:
             pass
+
+        # render curl counter
+        # setup status box
+        cv2.rectangle(image, (0,0), (300,73), (245,117,16), -1)
+
+        #rep data
+        cv2.putText(image, "REPS", (15,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
+        cv2.putText(image, str(counter), (10,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2, cv2.LINE_AA)
+
+        #stage data
+        cv2.putText(image, "STAGE", (105,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
+        cv2.putText(image, stage, (100,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2, cv2.LINE_AA)
 
         # render detections
         mp_drawing.draw_landmarks(image, 
