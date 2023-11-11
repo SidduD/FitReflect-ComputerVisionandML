@@ -1,6 +1,5 @@
 # test_mediapipe - testing mediapipe pose esitmation
-## bicep curl counter 
-## body language detection with custom models 
+## bicep curl counter / body language detection with custom models 
 ## Quick Start
 
 1. Clone the repo: `git clone <repo URL>`
