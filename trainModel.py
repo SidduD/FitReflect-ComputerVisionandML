@@ -14,30 +14,30 @@ import pickle
 
 df = pd.read_csv('coords.csv')
 
-x = df.drop('class', axis=1) # features
-y = df['class']
+X = df.drop('class', axis=1) # features
+y = df['class'] # target value
 
 # xy_train train the model --> randomly selected data from CSV as training dataset 
 # xy_test test the trained model --> randomly selected data from the CSV to test the model
 # testing partiion is 30% 
 # random_state is a random variable seed value
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=1234)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1234)
 
 # setup pipelines --> think of each pipe as seperate model
 pipelines = {
-    'lr': make_pipeline(StandardScaler(), LogisticRegression()),
-    'rc': make_pipeline(StandardScaler(), RidgeClassifier()),
-    'rf': make_pipeline(StandardScaler(), RandomForestClassifier()),
-    'gb': make_pipeline(StandardScaler(), GradientBoostingClassifier())
+    'lr':make_pipeline(StandardScaler(), LogisticRegression()),
+    'rc':make_pipeline(StandardScaler(), RidgeClassifier()),
+    'rf':make_pipeline(StandardScaler(), RandomForestClassifier()),
+    'gb':make_pipeline(StandardScaler(), GradientBoostingClassifier()),
 }
 
 fit_models = {}
 for algo, pipeline in pipelines.items():
-    model = pipeline.fit(x_train, y_train)
+    model = pipeline.fit(X_train, y_train)
     fit_models[algo] = model
 
 for algo, model in fit_models.items():
-    yhat = model.predict(x_test)
+    yhat = model.predict(X_test)
     print(algo, accuracy_score(y_test, yhat))
 
 # saving the model 

@@ -22,7 +22,7 @@ mp_facemesh = mp.solutions.face_mesh
 
 cap = cv2.VideoCapture(0)
 
-class_name="victorious" # change to train diff expressions
+class_name="Sad" # change to train diff expressions
 
 # setup mediapipe instance
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
