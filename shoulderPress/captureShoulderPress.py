@@ -19,7 +19,7 @@ import numpy as np
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose 
 
-class_name="Incorrect" # change to train diff expressions
+class_name="incorrect" # change to train diff expressions
 
 def calculate_angle(a,b,c):
     a = np.array(a) # first

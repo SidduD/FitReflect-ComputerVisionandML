@@ -5,6 +5,7 @@ import mediapipe as mp
 import numpy as np
 import pandas as pd
 import pickle
+
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose 
 
@@ -25,6 +26,8 @@ def calculate_angle(a,b,c):
         angle = 360-angle
 
     return angle
+
+
 
 cap = cv2.VideoCapture(0)
 
@@ -177,8 +180,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             cv2.putText(image, 'PROB'
                         , (15,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             cv2.putText(image, str(round(body_language_prob[np.argmax(body_language_prob)],2))
-                        , (10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-            
+                        , (10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)    
         except:
             pass
     
@@ -190,6 +192,8 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                                   mp_drawing.DrawingSpec(color=(245,66,117), thickness=2, circle_radius=2)  # connections
                                   )
         
+       
+        
         cv2.imshow("Mediapipe Feed", image)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
@@ -197,3 +201,4 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             
     cap.release()
     cv2.destroyAllWindows()
+   

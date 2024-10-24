@@ -15,7 +15,7 @@ import pickle
 df = pd.read_csv('shoulder_press_coords.csv')
 
 X = df.drop('class', axis=1) # features
-y = df['class'] # target value
+y = df['class']# target value
 
 # xy_train train the model --> randomly selected data from CSV as training dataset 
 # xy_test test the trained model --> randomly selected data from the CSV to test the model
